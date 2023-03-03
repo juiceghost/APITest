@@ -1,4 +1,8 @@
-﻿namespace APITest;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace APITest;
 
 public class Program
 {
@@ -47,6 +51,7 @@ public class Program
 
         app.MapGet("/krille", (HttpContext httpContext) =>
         {
+            // Denna endpoint ska bara gå att komma åt om du lyckats autentisera dig
             string MyLocation = httpContext.Request.Query["location"].ToString();
             var response = new KrilleModel
             {
@@ -60,6 +65,68 @@ public class Program
         })
         .WithName("GetKrille");
 
+        app.MapPost("/login2", (UserModel loginAttempt) =>
+        {
+            // Denna endpoint låter användaren autentisera sig mot vårt API.
+            // Dvs låter användaren logga in.
+            // Användaren måste göra ett POST request till denna endpoint
+            // username måste vara Krille
+            // password måste vara Janbanan123
+
+            
+
+            Console.WriteLine($"Username from Insomnia: {loginAttempt.username}, password: {loginAttempt.password}");
+            // here after you can play as you like :)
+            //return await Task.FromResult<string>(postData);
+
+            var response = new LoginResponse { };
+
+            if (loginAttempt.username == "Krille" && loginAttempt.password == "Janbanan123")
+            {
+                response.code = 200;
+                response.message = "Login successful";
+                return loginAttempt.LoginSuccess();
+            }
+
+            response.code = 401;
+            response.message = "Username or password incorrect";
+            return loginAttempt.LoginFailed();
+
+        })
+        .WithName("Login2");
+        /*
+        app.MapPost("/login", async (HttpContext httpContext) =>
+        {
+            // Denna endpoint låter användaren autentisera sig mot vårt API.
+            // Dvs låter användaren logga in.
+            // Användaren måste göra ett POST request till denna endpoint
+            // username måste vara Krille
+            // password måste vara Janbanan123
+
+            var body = new StreamReader(httpContext.Request.Body);
+            string postData = await body.ReadToEndAsync();
+            UserModel loginUser = JsonSerializer.Deserialize<UserModel>(postData) ?? new UserModel { };
+
+            Console.WriteLine($"Username from Insomnia: {loginUser.username}, password: {loginUser.password}");
+            // here after you can play as you like :)
+            //return await Task.FromResult<string>(postData);
+
+            var response = new LoginResponse { };
+
+            if (loginUser.username == "Krille" && loginUser.password == "Janbanan123")
+            {
+                response.code = 200;
+                response.message = "Login successful";
+                return response;
+            }
+
+            response.code = 401;
+            response.message = "Username or password incorrect";
+            return Result.Unauthorized(response);
+
+        })
+        .WithName("Login");
+        */
 
         app.Run();
     }
