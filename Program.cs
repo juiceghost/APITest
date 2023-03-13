@@ -49,6 +49,28 @@ public class Program
         })
         .WithName("GetWeatherForecast");
 
+        app.MapPost("/product", (ProductModel product) =>
+        {
+            // Denna endpoint ska bara gå att komma åt om du lyckats autentisera dig
+            //string MyLocation = httpContext.Request.Query["location"].ToString();
+            var response = SQLServerDataAccess.AddProduct(product);
+
+
+            return response;
+        })
+        .WithName("AddProduct");
+
+        app.MapGet("/product", (HttpContext httpContext) =>
+        {
+            // Denna endpoint ska bara gå att komma åt om du lyckats autentisera dig
+            //string MyLocation = httpContext.Request.Query["location"].ToString();
+            //var response = SQLServerDataAccess.AddProduct("Macbook Air", "Bestest computer evah");
+            var response = SQLServerDataAccess.GetProducts();
+
+            return response;
+        })
+        .WithName("GetProducts");
+
         app.MapGet("/krille", (HttpContext httpContext) =>
         {
             // Denna endpoint ska bara gå att komma åt om du lyckats autentisera dig
