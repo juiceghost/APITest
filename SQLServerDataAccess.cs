@@ -9,6 +9,12 @@ namespace APITest
 		{
             using (var context = new PersonDbContext())
             {
+                // Validera att product.productName inte redan finns i DB:n
+                if (context.Products.Any(p => p.ProductName == product.ProductName))
+                {
+                    return product;
+                };
+                //Console.WriteLine($"Existing product length: {existingProduct}");
                 context.Products.Add(product);
                 context.SaveChanges();
                 return product;

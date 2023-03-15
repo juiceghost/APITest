@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.Globalization;
+using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,6 +53,35 @@ public class Program
 
         app.MapPost("/product", (ProductModel product) =>
         {
+            // TODO: Validation = validering
+            // TODO: Normalisation = normalisering
+
+            // productName:
+            // "mac pro" in
+            // "Mac Pro" ut
+            // "lenovo yogapad pro ultra" in
+            // "Lenovo Yogapad Pro Ultra" ut
+
+            // Normalisera productName
+            TextInfo myTI = new CultureInfo("en-US", false).TextInfo;
+            product.ProductName = myTI.ToTitleCase(product.ProductName);
+
+            // Normalisera productDescription
+            string[] sentences = product.ProductDescription.Split(". ");
+            for (int i = 0; i < sentences.Length; i++)
+            {
+                sentences[i] = $"{sentences[i][0].ToString().ToUpper()}{sentences[i].Substring(1)}";
+            }
+            product.ProductDescription = string.Join(". ", sentences);
+            // Varje ord i productName måste börja på stor bokstav.
+            // Första bokstaven i varje mening i productDescription måste börja
+            // på stor bokstav
+
+            // Hur skulle googlingen kunna se ut?
+            // Om vi så småningom ska skapa en funktion för detta
+            // hur skulle argument samt returvärde (typ) se ut för den funktionen?
+
+
             // Denna endpoint ska bara gå att komma åt om du lyckats autentisera dig
             //string MyLocation = httpContext.Request.Query["location"].ToString();
             var response = SQLServerDataAccess.AddProduct(product);
