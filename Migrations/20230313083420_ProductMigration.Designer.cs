@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace APITest.Migrations
 {
-    [DbContext(typeof(PersonDbContext))]
+    [DbContext(typeof(RepositoryContext))]
     [Migration("20230313083420_ProductMigration")]
     partial class ProductMigration
     {

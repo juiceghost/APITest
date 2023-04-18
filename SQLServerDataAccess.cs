@@ -7,7 +7,7 @@ namespace APITest
 	{
 		public static ProductModel AddProduct(ProductModel product)
 		{
-            using (var context = new PersonDbContext())
+            using (var context = new RepositoryContext())
             {
                 // Validera att product.productName inte redan finns i DB:n
                 if (context.Products.Any(p => p.ProductName == product.ProductName))
@@ -23,7 +23,7 @@ namespace APITest
 
         public static List<ProductModel> GetProducts()
         {
-            using (var context = new PersonDbContext())
+            using (var context = new RepositoryContext())
             {
                 return context.Products.ToList();  
             }

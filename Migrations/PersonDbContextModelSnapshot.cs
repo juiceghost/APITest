@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace APITest.Migrations
 {
-    [DbContext(typeof(PersonDbContext))]
+    [DbContext(typeof(RepositoryContext))]
     partial class PersonDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

@@ -84,10 +84,13 @@ public class Program
 
             // Denna endpoint ska bara gå att komma åt om du lyckats autentisera dig
             //string MyLocation = httpContext.Request.Query["location"].ToString();
-            var response = SQLServerDataAccess.AddProduct(product);
+            //var response = SQLServerDataAccess.AddProduct(product);
 
-
-            return response;
+            RepositoryContext repoContext = new RepositoryContext();
+            ProductRepository productRepo = new ProductRepository(repoContext);
+            productRepo.Create(product);
+            repoContext.SaveChanges();
+            return product;
         })
         .WithName("AddProduct");
 
@@ -96,11 +99,28 @@ public class Program
             // Denna endpoint ska bara gå att komma åt om du lyckats autentisera dig
             //string MyLocation = httpContext.Request.Query["location"].ToString();
             //var response = SQLServerDataAccess.AddProduct("Macbook Air", "Bestest computer evah");
-            var response = SQLServerDataAccess.GetProducts();
+            //var response = SQLServerDataAccess.GetProducts();
 
-            return response;
+            ProductRepository productRepo = new ProductRepository(new RepositoryContext());
+
+
+            return productRepo.GetAll();
         })
         .WithName("GetProducts");
+
+        app.MapGet("/product/{id}", (int id, HttpContext httpContext) =>
+        {
+            // Denna endpoint ska bara gå att komma åt om du lyckats autentisera dig
+            //string MyLocation = httpContext.Request.Query["location"].ToString();
+            //var response = SQLServerDataAccess.AddProduct("Macbook Air", "Bestest computer evah");
+            //var response = SQLServerDataAccess.GetProducts();
+
+            ProductRepository productRepo = new ProductRepository(new RepositoryContext());
+
+
+            return productRepo.GetByCondition(product => product.ProductId == id);
+        })
+        .WithName("GetProductByID");
 
         app.MapGet("/krille", (HttpContext httpContext) =>
         {
