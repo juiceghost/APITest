@@ -4,17 +4,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace APITest
 {
-    public class ProductModel
+    public class CategoryModel
     {
         [Key]
-        public int ProductId { get; set; }
+        public int CategoryId { get; set; }
         [Required]
         [StringLength(30)]
-        [DisplayName("Product Name")]
-        public string ProductName { get; set; }
+        [DisplayName("Category Name")]
+        public string CategoryName { get; set; }
         [StringLength(30)]
-        [DisplayName("Product Description")]
-        public string ProductDescription { get; set; }
+        [DisplayName("Category Description")]
+        public string CategoryDescription { get; set; }
 
         public List<ProductCategoryModel> ProductCategories { get; set; }
     }

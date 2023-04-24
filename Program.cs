@@ -77,7 +77,7 @@ public class Program
             // Första bokstaven i varje mening i productDescription måste börja
             // på stor bokstav
 
-            // Hur skulle googlingen kunna se ut?
+            // Hur skulle googlingen kunna se ut?   
             // Om vi så småningom ska skapa en funktion för detta
             // hur skulle argument samt returvärde (typ) se ut för den funktionen?
 
@@ -121,6 +121,46 @@ public class Program
             return productRepo.GetByCondition(product => product.ProductId == id);
         })
         .WithName("GetProductByID");
+
+        app.MapGet("/productcategory", (HttpContext httpContext) =>
+        {
+            int ProductId = Int32.Parse(httpContext.Request.Query["product"]);
+            int CategoryId = Int32.Parse(httpContext.Request.Query["category"]);
+
+            var productCategory = new ProductCategoryModel
+            {
+                ProductId = ProductId,
+                CategoryId = CategoryId
+            };
+
+            var ctx = new RepositoryContext();
+            ProductCategoryRepository productCategoryRepo = new ProductCategoryRepository(ctx);
+
+            productCategoryRepo.Create(productCategory);
+            ctx.SaveChanges();
+            return productCategory;
+        })
+        .WithName("AssignProductToCategory");
+
+        app.MapGet("/product2", (HttpContext httpContext) =>
+        {
+            //int ProductId = Int32.Parse(httpContext.Request.Query["product"]);
+            int CategoryId = Int32.Parse(httpContext.Request.Query["category"]);
+
+          
+            var ctx = new RepositoryContext();
+            ProductRepository productRepo = new ProductRepository(ctx);
+            ProductCategoryRepository productCategoryRepo = new ProductCategoryRepository(ctx);
+            // OLD: var productCategoryToProduct = productCategoryRepo.GetAll().Join(productRepo.GetAll(),
+            var productCategoryToProduct = productCategoryRepo.GetAll().Where(productCat => productCat.CategoryId == CategoryId).Join(productRepo.GetAll(),
+                        productCategory => productCategory.ProductId,
+                        product => product.ProductId,
+                        (prodCat, prod) => new { ProductModel = prod }).ToList();
+
+
+            return productCategoryToProduct;
+        })
+        .WithName("GetProductsByCategory");
 
         app.MapGet("/krille", (HttpContext httpContext) =>
         {
